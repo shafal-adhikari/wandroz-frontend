@@ -9,6 +9,7 @@ export default {
     extend: {
       colors: {
         primary: "#3590DD",
+        primaryHover: "#3590CC",
       },
     },
   },

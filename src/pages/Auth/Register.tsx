@@ -2,8 +2,10 @@ import { useState } from "react";
 import Input from "../../components/shared/ui/Input";
 import { Icon } from "@iconify/react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance from "../../config/axios.config";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { signup } from "../../store/auth/auth-actions";
+import { AppDispatch } from "../../store/store";
 
 function Register() {
   const [body, setBody] = useState({
@@ -12,21 +14,17 @@ function Register() {
     email: "",
   });
   const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBody((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
   const signupHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { data } = await axiosInstance.post("/signup", body);
-      console.log(data);
-      toast.success("Registered successfully");
+      await dispatch(signup(body)).unwrap();
       navigate("/");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      const { data } = await err.response;
-      console.log(data);
-      toast.error(data.message);
+    } catch (error) {
+      toast.error(error as string);
     }
   };
   return (

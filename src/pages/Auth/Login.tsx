@@ -2,14 +2,17 @@ import { useState } from "react";
 import Input from "../../components/shared/ui/Input";
 import { Icon } from "@iconify/react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance from "../../config/axios.config";
 import { toast } from "react-toastify";
+import { AppDispatch } from "../../store/store";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/auth/auth-actions";
 
 function Login() {
   const [body, setBody] = useState({
-    username: "",
+    email: "",
     password: "",
   });
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBody((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -17,15 +20,10 @@ function Login() {
   const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { data } = await axiosInstance.post("/login", body);
-      console.log(data);
-      toast.success("Login successful");
+      await dispatch(login(body)).unwrap();
       navigate("/");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      const { data } = await err.response;
-      console.log(data);
-      toast.error(data.message);
+    } catch (error) {
+      toast.error(error as string);
     }
   };
   return (
@@ -47,12 +45,12 @@ function Login() {
                 />
               }
               type="text"
-              placeholder="Enter email or username"
+              placeholder="Enter email"
               className="w-[80%] px-3 py-3"
               inputClassName="text-xxl"
               onChange={inputChangeHandler}
-              name="username"
-              value={body.username}
+              name="email"
+              value={body.email}
             />
             <Input
               icon={

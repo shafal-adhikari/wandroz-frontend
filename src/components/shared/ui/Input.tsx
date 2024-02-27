@@ -1,3 +1,13 @@
+export interface InputProps {
+  value: string;
+  type: string;
+  name?: string;
+  className?: string;
+  inputClassName?: string;
+  placeholder?: string;
+  icon?: React.ReactNode;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 function Input({
   value,
   onChange,
@@ -7,20 +17,9 @@ function Input({
   type,
   inputClassName,
   placeholder,
-}: {
-  value: string;
-  type: string;
-  name?: string;
-  className?: string;
-  inputClassName?: string;
-  placeholder?: string;
-  icon?: React.ReactNode;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
+}: InputProps) {
   return (
-    <div
-      className={`bg-slate-100 rounded-md flex items-center gap-2 ${className}`}
-    >
+    <div className={`bg-slate-100 flex items-center gap-2 ${className}`}>
       {icon}
       <input
         className={`border-none bg-transparent text-slate-600 grow outline-none ${inputClassName}`}
