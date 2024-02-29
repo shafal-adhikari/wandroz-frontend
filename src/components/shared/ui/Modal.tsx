@@ -1,33 +1,35 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, ReactNode } from "react";
-type SetIsOpen = React.Dispatch<React.SetStateAction<boolean>>;
 
 export default function Modal({
   isOpen,
-  setIsOpen,
+  closeModal,
+  staticBackdrop,
   children,
   title,
+  className,
 }: {
   isOpen: boolean;
-  title: string;
-  setIsOpen: SetIsOpen;
+  title?: string;
+  closeModal: () => void;
+  staticBackdrop?: boolean;
   children: ReactNode;
+  className?: string;
 }) {
-  function closeModal() {
-    setIsOpen(false);
-  }
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog
+          as="div"
+          className={`relative z-10 ${className}`}
+          onClose={!staticBackdrop ? closeModal : () => {}}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
+            leave="none"
             enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black/25" />
           </Transition.Child>
@@ -38,18 +40,18 @@ export default function Modal({
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 scale-95"
+                leave="none"
                 enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  >
-                    {title}
-                  </Dialog.Title>
+                  {title && (
+                    <Dialog.Title
+                      as="h3"
+                      className="text-2xl font-medium leading-6 text-slate-800 py-4"
+                    >
+                      {title}
+                    </Dialog.Title>
+                  )}
                   {children}
                 </Dialog.Panel>
               </Transition.Child>

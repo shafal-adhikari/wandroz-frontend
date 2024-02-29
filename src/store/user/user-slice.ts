@@ -3,18 +3,22 @@ import {
   acceptFollowRequest,
   followUser,
   getFollowRequests,
+  getFollowers,
+  getFollowings,
   getProfile,
   getProfileById,
-  getProfilePosts,
+  getSuggestedUsers,
   searchUsers,
+  updateBasicInfos,
   uploadProfilePicture,
 } from "./user-actions";
 import { toast } from "react-toastify";
-interface User {
+export interface User {
   _id: string;
   firstName: string;
   lastName: string;
   email?: string;
+  quote: string;
   privacy: string;
   profilePicture: string;
   postsCount: number;
@@ -25,12 +29,7 @@ interface User {
   school: string;
   location: string;
   followingStatus?: FollowingStatus;
-  social: {
-    facebook: string;
-    instagram: string;
-    twitter: string;
-    youtube: string;
-  };
+  social: SocialLinks;
 }
 interface IReactions {
   like: number;
@@ -62,6 +61,12 @@ export enum FollowingStatus {
   NOT_FOLLOWING = "NOT_FOLLOWING",
   PENDING = "PENDING",
 }
+export interface SocialLinks {
+  instagram: string;
+  facebook: string;
+  twitter: string;
+  youtube: string;
+}
 interface UserState {
   loading: boolean;
   error: string | null;
@@ -74,15 +79,21 @@ interface UserState {
   followLoading: boolean;
   followRequestsLoading: boolean;
   profileUploadLoading: boolean;
-  followRequests: FollowRequest[];
+  followRequests: Follow[];
+  followings: Follow[];
+  followers: Follow[];
+  followersLoading: boolean;
   acceptLoadings: string[];
+  suggestedUsers: User[];
+  updateLoading: boolean;
+  suggestedLoading: boolean;
 }
 enum Status {
   PENDING = "PENDING",
   FOLLOWING = "FOLLOWING",
   NOT_FOLLOWED = "NOT_FOLLOWED",
 }
-interface FollowRequest {
+export interface Follow {
   _id: string;
   firstName: string;
   lastName: string;
@@ -102,7 +113,13 @@ const initialState: UserState = {
   followLoading: false,
   followRequestsLoading: false,
   profileUploadLoading: false,
+  suggestedUsers: [],
+  followers: [],
+  followings: [],
   acceptLoadings: [],
+  followersLoading: false,
+  updateLoading: false,
+  suggestedLoading: false,
 };
 
 const userSlice = createSlice({
@@ -134,14 +151,6 @@ const userSlice = createSlice({
       .addCase(getProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) ?? "An error occurred";
-      })
-      .addCase(getProfilePosts.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getProfilePosts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.userPosts = action.payload.posts;
       })
       .addCase(searchUsers.pending, (state) => {
         state.searchLoading = true;
@@ -208,6 +217,37 @@ const userSlice = createSlice({
       .addCase(uploadProfilePicture.rejected, (state, action) => {
         state.profileUploadLoading = false;
         toast.error(action.payload as string);
+      })
+      .addCase(updateBasicInfos.fulfilled, (state) => {
+        state.updateLoading = false;
+      })
+      .addCase(updateBasicInfos.pending, (state) => {
+        state.updateLoading = true;
+      })
+      .addCase(updateBasicInfos.rejected, (state, action) => {
+        state.updateLoading = false;
+        toast.error(action.payload as string);
+      })
+      .addCase(getFollowers.pending, (state) => {
+        state.followersLoading = true;
+      })
+      .addCase(getFollowings.pending, (state) => {
+        state.followersLoading = true;
+      })
+      .addCase(getFollowings.fulfilled, (state, action) => {
+        state.followersLoading = false;
+        state.followings = action.payload;
+      })
+      .addCase(getFollowers.fulfilled, (state, action) => {
+        state.followersLoading = false;
+        state.followers = action.payload;
+      })
+      .addCase(getSuggestedUsers.pending, (state) => {
+        state.suggestedLoading = true;
+      })
+      .addCase(getSuggestedUsers.fulfilled, (state, action) => {
+        state.suggestedLoading = false;
+        state.suggestedUsers = action.payload;
       });
   },
 });

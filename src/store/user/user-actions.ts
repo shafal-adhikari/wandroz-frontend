@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios.config";
 import { AxiosError } from "axios";
 import { ResponseError } from "../constants";
+import { SocialLinks, User } from "./user-slice";
 
 export const getProfile = createAsyncThunk(
   "user/profile",
@@ -37,28 +38,28 @@ export const getProfileById = createAsyncThunk(
   }
 );
 
-export const getProfilePosts = createAsyncThunk(
-  "user/profilePosts",
-  async (userId: string, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(`/user/posts/${userId}`);
-      return response.data;
-    } catch (error) {
-      const err = error as AxiosError<ResponseError>;
-      if (err.response && err.response.data && err.response.data.message) {
-        return rejectWithValue(err.response.data.message);
-      } else {
-        return rejectWithValue("An error occurred");
-      }
-    }
-  }
-);
 export const searchUsers = createAsyncThunk(
   "user/search",
   async (searchText: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/user/search/${searchText}`);
       return response.data.search;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occured");
+      }
+    }
+  }
+);
+export const getSuggestedUsers = createAsyncThunk(
+  "user/suggestions",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/user/user-suggestions`);
+      return response.data.users;
     } catch (error) {
       const err = error as AxiosError<ResponseError>;
       if (err.response && err.response.data && err.response.data.message) {
@@ -130,6 +131,73 @@ export const acceptFollowRequest = createAsyncThunk(
     try {
       await axiosInstance.put(`/user/follow-requests/accept`, data);
       return data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occured");
+      }
+    }
+  }
+);
+export const updateBasicInfos = createAsyncThunk(
+  "user/update",
+  async (data: Partial<User>, { rejectWithValue }) => {
+    try {
+      const result = await axiosInstance.put(`/user/profile/basic-info`, data);
+      return result.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occured");
+      }
+    }
+  }
+);
+export const updateSocialLinks = createAsyncThunk(
+  "user/update",
+  async (data: SocialLinks, { rejectWithValue }) => {
+    try {
+      const result = await axiosInstance.put(
+        `/user/profile/social-links`,
+        data
+      );
+      return result.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occured");
+      }
+    }
+  }
+);
+export const getFollowers = createAsyncThunk(
+  "user/followers",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const result = await axiosInstance.get(`/user/followers/${userId}`);
+      return result.data.followers;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occured");
+      }
+    }
+  }
+);
+export const getFollowings = createAsyncThunk(
+  "user/followings",
+  async (_, { rejectWithValue }) => {
+    try {
+      const result = await axiosInstance.get(`/user/following`);
+      return result.data.following;
     } catch (error) {
       const err = error as AxiosError<ResponseError>;
       if (err.response && err.response.data && err.response.data.message) {

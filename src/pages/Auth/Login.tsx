@@ -29,7 +29,7 @@ function Login() {
   return (
     <form onSubmit={loginHandler}>
       <div className="w-screen h-screen flex items-center justify-center">
-        <div className=" w-screen h-screen bg-white md:h-auto md:w-[25vw] rounded-3xl flex flex-col items-center py-10 px-5 gap-12">
+        <div className=" w-screen h-screen bg-white md:h-auto md:w-[25vw] rounded-3xl flex flex-col items-center py-10 px-5 gap-12 shadow-2xl">
           <div className="flex flex-col gap-5 items-center">
             <h2 className="text-3xl font-bold text-slate-700">Wandroz</h2>
             <span className="text-md text-slate-500 text-center">

@@ -8,7 +8,67 @@ export const getPosts = createAsyncThunk(
   async (currentPage: number, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/post/all/${currentPage}`);
-      return response.data.posts;
+      return {
+        posts: response.data.posts,
+        postsCount: response.data.totalPosts,
+      };
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occurred");
+      }
+    }
+  }
+);
+export const getProfilePosts = createAsyncThunk(
+  "post/profilePosts",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/user/posts/${userId}`);
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occurred");
+      }
+    }
+  }
+);
+interface ReactionData {
+  postId: string;
+  previousReaction: string;
+  type: string;
+}
+export const reactToPost = createAsyncThunk(
+  "post/react",
+  async (data: ReactionData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`/post/reaction`, data);
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occurred");
+      }
+    }
+  }
+);
+interface CommentData {
+  postId: string;
+  comment: string;
+}
+export const addComment = createAsyncThunk(
+  "post/comment",
+  async (data: CommentData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`/post/comment`, data);
+      return response.data;
     } catch (error) {
       const err = error as AxiosError<ResponseError>;
       if (err.response && err.response.data && err.response.data.message) {
