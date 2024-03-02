@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 import { ResponseError } from "../constants";
 import axiosInstance from "../../config/axios.config";
+import { CommentData } from "./post-slice";
 
 export const getPosts = createAsyncThunk(
   "post/getPosts",
@@ -59,15 +60,32 @@ export const reactToPost = createAsyncThunk(
     }
   }
 );
-interface CommentData {
-  postId: string;
-  comment: string;
-}
+
 export const addComment = createAsyncThunk(
   "post/comment",
   async (data: CommentData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(`/post/comment`, data);
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occurred");
+      }
+    }
+  }
+);
+interface RemoveReactionData {
+  postId: string;
+  previousReaction: string;
+}
+export const removeReaction = createAsyncThunk(
+  "post/remove-react",
+  async (data: RemoveReactionData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`/post/reaction/remove`, data);
       return response.data;
     } catch (error) {
       const err = error as AxiosError<ResponseError>;

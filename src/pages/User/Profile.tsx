@@ -100,8 +100,8 @@ export function Profile() {
   };
   return (
     <>
-      <div className="w-[70vw] mx-auto bg-white h-auto p-4 rounded-2xl mt-2 shadow-xl">
-        <div className="w-full h-[50vh]">
+      <div className="w-[70vw] mx-auto bg-white h-auto p-4 rounded-2xl my-5 shadow-xl">
+        <div className="w-full h-[10vh]">
           <img
             src="https://img.freepik.com/free-vector/dark-gradient-background-with-copy-space_53876-99548.jpg"
             className="w-full h-full rounded-xl object-cover "

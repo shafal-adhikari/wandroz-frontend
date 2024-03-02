@@ -4,6 +4,7 @@ import {
   getPosts,
   getProfilePosts,
   reactToPost,
+  removeReaction,
 } from "./post-actions";
 export interface IReactions {
   like: number;
@@ -12,6 +13,13 @@ export interface IReactions {
   wow: number;
   sad: number;
   angry: number;
+}
+export interface CommentData {
+  postId?: string;
+  firstName?: string;
+  lastName?: string;
+  profilePicture?: string;
+  comment: string;
 }
 interface Post {
   _id: string;
@@ -39,6 +47,7 @@ interface PostState {
   error?: string | null;
   userPostsLoading: boolean;
   postsCount: number;
+  comments: CommentData[];
 }
 const initialState: PostState = {
   postsLoading: false,
@@ -47,6 +56,7 @@ const initialState: PostState = {
   error: null,
   userPostsLoading: false,
   userPosts: [],
+  comments: [],
 };
 const postSlice = createSlice({
   name: "posts",
@@ -80,24 +90,67 @@ const postSlice = createSlice({
         state.userPosts = action.payload.posts;
       })
       .addCase(reactToPost.fulfilled, (state, action) => {
+        const data = action.meta.arg;
         const newPostsData = [...state.posts].map((post) => {
-          if (post._id == action.meta.arg.postId) {
+          if (post._id == data.postId) {
             return {
               ...post,
-              userReaction: action.meta.arg.type,
+              userReaction: data.type,
               reactionCount:
                 post.reactionCount! +
-                (action.meta.arg.previousReaction.length > 1 ? 0 : 1),
+                (data.previousReaction.length > 1 ? 0 : 1),
               reactions: {
                 ...post.reactions,
-                [action.meta.arg.type]:
+                [data.type]:
+                  post.reactions[data.type as keyof typeof post.reactions] + 1,
+                [data.previousReaction]: data.previousReaction.length
+                  ? post.reactions[
+                      data.previousReaction as keyof typeof post.reactions
+                    ] - 1
+                  : 0,
+              },
+            };
+          }
+          return post;
+        });
+        const newUserPosts = [...state.userPosts].map((post) => {
+          if (post._id == data.postId) {
+            return {
+              ...post,
+              userReaction: data.type,
+              reactionCount:
+                post.reactionCount! +
+                (data.previousReaction.length > 1 ? 0 : 1),
+              reactions: {
+                ...post.reactions,
+                [data.type]:
+                  post.reactions[data.type as keyof typeof post.reactions] + 1,
+                [data.previousReaction]: data.previousReaction.length
+                  ? post.reactions[
+                      data.previousReaction as keyof typeof post.reactions
+                    ] - 1
+                  : 0,
+              },
+            };
+          }
+          return post;
+        });
+        state.userPosts = newUserPosts;
+        state.posts = newPostsData;
+      })
+      .addCase(removeReaction.fulfilled, (state, action) => {
+        const data = action.meta.arg;
+        const newPostsData = [...state.posts].map((post) => {
+          if (post._id == data.postId) {
+            return {
+              ...post,
+              userReaction: "",
+              reactionCount: post.reactionCount! - 1,
+              reactions: {
+                ...post.reactions,
+                [data.previousReaction]:
                   post.reactions[
-                    action.meta.arg.type as keyof typeof post.reactions
-                  ] + 1,
-                [action.meta.arg.previousReaction]:
-                  post.reactions[
-                    action.meta.arg
-                      .previousReaction as keyof typeof post.reactions
+                    data.previousReaction as keyof typeof post.reactions
                   ] - 1,
               },
             };
@@ -105,23 +158,16 @@ const postSlice = createSlice({
           return post;
         });
         const newUserPosts = [...state.userPosts].map((post) => {
-          if (post._id == action.meta.arg.postId) {
+          if (post._id == data.postId) {
             return {
               ...post,
-              userReaction: action.meta.arg.type,
-              reactionCount:
-                post.reactionCount! +
-                (action.meta.arg.previousReaction.length > 0 ? 0 : 1),
+              userReaction: "",
+              reactionCount: post.reactionCount! - 1,
               reactions: {
                 ...post.reactions,
-                [action.meta.arg.type]:
+                [data.previousReaction]:
                   post.reactions[
-                    action.meta.arg.type as keyof typeof post.reactions
-                  ] + 1,
-                [action.meta.arg.previousReaction]:
-                  post.reactions[
-                    action.meta.arg
-                      .previousReaction as keyof typeof post.reactions
+                    data.previousReaction as keyof typeof post.reactions
                   ] - 1,
               },
             };
