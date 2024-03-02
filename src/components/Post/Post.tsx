@@ -34,7 +34,7 @@ function Post({
   authorPicture: string;
   time: Date;
   images?: string[];
-  content?: string;
+  content: string;
   userReaction: string;
   reactions: IReactions;
   reactionCount: number;
@@ -117,7 +117,7 @@ function Post({
           </div>
         </div>
       </div>
-      {content?.length && (
+      {content.length > 0 && (
         <div className="text-md text-slate-900">{content}</div>
       )}
       <Swiper
@@ -125,11 +125,14 @@ function Post({
           dynamicBullets: true,
         }}
         modules={[Pagination]}
-        className="w-full max-h-30"
+        className="w-full"
       >
         {images?.map((image, index) => (
           <SwiperSlide key={index}>
-            <img src={image} className="w-full" />
+            <img
+              src={image}
+              className="w-full aspect-[10/7] object-cover mt-2"
+            />
           </SwiperSlide>
         ))}
       </Swiper>
@@ -146,7 +149,9 @@ function Post({
                 />
               );
             })}
-            <span className="text-slate-700 ml-2">{reactionCount}</span>
+            {reactionCount > 0 && (
+              <span className="text-slate-700 ml-2">{reactionCount}</span>
+            )}
           </div>
           {commentsCount > 0 && (
             <span className="text-slate-700 justify-self-center">
@@ -155,27 +160,29 @@ function Post({
           )}
         </div>
       )}
-      <div className="w-full h-15 flex justify-between items-end">
+      <div className="w-full h-15 flex justify-between items-end py-2">
         <div
-          className="grow flex flex-col gap-3 w-1/2"
+          className="grow flex flex-col gap-3 w-1/2 z-10"
           onMouseEnter={toggleReactions}
           onMouseLeave={toggleReactions}
         >
           {showReactions && (
             <div className="flex rounded-full p-3 -mt-10 -ml-14 shadow-lg gap-2 bg-white w-fit">
               {Object.keys(reactions).map((reaction, i) => {
-                return (
-                  <img
-                    key={i}
-                    src={`/reactions/${reaction}.png`}
-                    className="w-8 h-8 cursor-pointer"
-                    onClick={() => handleReactionClick(reaction)}
-                  />
-                );
+                if (reaction.length > 0)
+                  return (
+                    <img
+                      key={i}
+                      src={`/reactions/${reaction}.png`}
+                      className="w-8 h-8 cursor-pointer"
+                      onClick={() => handleReactionClick(reaction)}
+                    />
+                  );
               })}
             </div>
           )}
-          {Object.keys(reactions).includes(userReaction) ? (
+          {userReaction.length &&
+          Object.keys(reactions).includes(userReaction) ? (
             <div
               className="flex gap-3 cursor-pointer"
               onClick={() => removeReactionHandler()}

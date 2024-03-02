@@ -30,32 +30,9 @@ export interface User {
   location: string;
   followingStatus?: FollowingStatus;
   social: SocialLinks;
+  notifications: NotificationSettings;
 }
-interface IReactions {
-  like: number;
-  love: number;
-  happy: number;
-  wow: number;
-  sad: number;
-  angry: number;
-}
-interface Post {
-  _id: string;
-  userId: string;
-  post: string;
-  commentsCount: number;
-  profilePicture?: string;
-  firstName?: string;
-  lastName?: string;
-  imageLinks: string[];
-  videoLinks: string[];
-  videoId?: string;
-  videoVersion?: string;
-  feelings?: string;
-  privacy?: string;
-  reactions?: IReactions;
-  createdAt?: Date;
-}
+
 export enum FollowingStatus {
   FOLLOWING = "FOLLOWING",
   NOT_FOLLOWING = "NOT_FOLLOWING",
@@ -67,11 +44,16 @@ export interface SocialLinks {
   twitter: string;
   youtube: string;
 }
+export interface NotificationSettings {
+  messages: boolean;
+  follows: boolean;
+  reactions: boolean;
+  comments: boolean;
+}
 interface UserState {
   loading: boolean;
   error: string | null;
   user: User | null;
-  userPosts: Post[];
   searchUsers: User[];
   userProfile: User | null;
   searchLoading: boolean;
@@ -104,7 +86,6 @@ const initialState: UserState = {
   user: null,
   loading: false,
   error: null,
-  userPosts: [],
   searchUsers: [],
   followRequests: [],
   userProfile: null,

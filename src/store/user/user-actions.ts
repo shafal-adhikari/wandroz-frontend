@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axios.config";
 import { AxiosError } from "axios";
 import { ResponseError } from "../constants";
-import { SocialLinks, User } from "./user-slice";
+import { NotificationSettings, SocialLinks, User } from "./user-slice";
 
 export const getProfile = createAsyncThunk(
   "user/profile",
@@ -165,6 +165,22 @@ export const updateSocialLinks = createAsyncThunk(
         `/user/profile/social-links`,
         data
       );
+      return result.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occured");
+      }
+    }
+  }
+);
+export const updateNotificationSettings = createAsyncThunk(
+  "user/notification-settings",
+  async (data: NotificationSettings, { rejectWithValue }) => {
+    try {
+      const result = await axiosInstance.put(`/user/profile/settings`, data);
       return result.data;
     } catch (error) {
       const err = error as AxiosError<ResponseError>;

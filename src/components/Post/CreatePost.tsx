@@ -1,9 +1,12 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "../shared/ui/Modal";
-import { RootState } from "../../store/store";
+import { AppDispatch, RootState } from "../../store/store";
 import { useState } from "react";
 import { Menu } from "@headlessui/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import Dropzone from "./Dropzone";
+import { uploadPost } from "../../store/post/post-actions";
+import { fileToBase64 } from "../../utils/common";
 
 export default function CreatePost({
   isOpen,
@@ -14,9 +17,30 @@ export default function CreatePost({
   setIsOpen: any;
 }) {
   const { user } = useSelector((state: RootState) => state.user);
+  const { uploadLoading } = useSelector((state: RootState) => state.post);
+  const [isPhotos, setIsPhotos] = useState(false);
   const [body, setBody] = useState({
     privacy: "Public",
+    post: "",
   });
+  const [files, setFiles] = useState<File[]>([]);
+  const dispatch: AppDispatch = useDispatch();
+  const uploadPostHandler = async () => {
+    const images: string[] = await Promise.all(
+      files.map(async (file) => {
+        const base64String = await fileToBase64(file);
+        return base64String;
+      })
+    );
+    await dispatch(
+      uploadPost({
+        privacy: body.privacy,
+        post: body.post,
+        images: images.length > 0 ? images : undefined,
+      })
+    );
+    setIsOpen(false);
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -91,9 +115,57 @@ export default function CreatePost({
           </div>
         </div>
         <textarea
-          className="w-full bg-none outline-none border-none h-[10rem] text-lg text-slate-700"
+          value={body.post}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setBody((prev) => {
+              return {
+                ...prev,
+                post: e.target.value,
+              };
+            })
+          }
+          className={`w-full bg-none outline-none border-none ${
+            !isPhotos ? "h-[10rem]" : "h-auto"
+          } text-lg text-slate-700`}
           placeholder="What's on your mind?"
         ></textarea>
+        {isPhotos && (
+          <Dropzone
+            files={files}
+            setFiles={setFiles}
+            accept={{
+              "image/jpeg": [".jpeg", ".jpg", ".JPEG", ".JPG"],
+              "image/png": [".png", ".PNG"],
+              "image/webp": [".webp", ".WEBP"],
+            }}
+          />
+        )}
+        <div className="sticky border border-slate-200 mx-2 rounded-xl p-3 flex justify-between items-center">
+          Add to your post
+          <div className="flex gap-3">
+            <Icon
+              onClick={() => setIsPhotos(!isPhotos)}
+              icon="heroicons:photo-solid"
+              className="text-2xl text-green-600 cursor-pointer"
+            />
+            {/* <Icon
+              icon="heroicons:video-camera-solid"
+              className="text-2xl text-red-600 cursor-pointer"
+            /> */}
+            {/* <Icon
+              icon="heroicons:gif-solid"
+              className="text-2xl text-blue-600 cursor-pointer"
+            /> */}
+          </div>
+        </div>
+        <button
+          onClick={uploadPostHandler}
+          disabled={body.post.length < 1 && files.length < 1}
+          className="outline-none flex w-full items-center gap-2 justify-center bg-primary text-white font-semibold py-2 rounded-md"
+        >
+          {uploadLoading && <Icon icon="gg:spinner" className="animate-spin" />}
+          Post
+        </button>
       </div>
     </Modal>
   );

@@ -97,3 +97,24 @@ export const removeReaction = createAsyncThunk(
     }
   }
 );
+interface PostData {
+  post: string;
+  privacy: string;
+  images?: string[];
+}
+export const uploadPost = createAsyncThunk(
+  "post/upload",
+  async (data: PostData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`/post`, data);
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occurred");
+      }
+    }
+  }
+);

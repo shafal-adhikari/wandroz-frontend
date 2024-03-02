@@ -5,7 +5,9 @@ import {
   getProfilePosts,
   reactToPost,
   removeReaction,
+  uploadPost,
 } from "./post-actions";
+import { toast } from "react-toastify";
 export interface IReactions {
   like: number;
   love: number;
@@ -48,7 +50,9 @@ interface PostState {
   userPostsLoading: boolean;
   postsCount: number;
   comments: CommentData[];
+  uploadLoading: boolean;
 }
+
 const initialState: PostState = {
   postsLoading: false,
   posts: [],
@@ -57,6 +61,7 @@ const initialState: PostState = {
   userPostsLoading: false,
   userPosts: [],
   comments: [],
+  uploadLoading: false,
 };
 const postSlice = createSlice({
   name: "posts",
@@ -199,6 +204,17 @@ const postSlice = createSlice({
         });
         state.userPosts = newUserPosts;
         state.posts = posts;
+      })
+      .addCase(uploadPost.pending, (state) => {
+        state.uploadLoading = true;
+      })
+      .addCase(uploadPost.fulfilled, (state) => {
+        state.uploadLoading = false;
+        toast.success("Post uploaded");
+      })
+      .addCase(uploadPost.rejected, (state, action) => {
+        state.uploadLoading = false;
+        toast.success(action.payload as string);
       });
   },
 });
