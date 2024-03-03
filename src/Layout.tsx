@@ -21,7 +21,8 @@ function Layout({ children }: { children: ReactNode }) {
 
   if (
     location.pathname.startsWith("/login") ||
-    location.pathname.startsWith("/register")
+    location.pathname.startsWith("/register") ||
+    location.pathname.startsWith("/reset-password")
   )
     return children;
   else {

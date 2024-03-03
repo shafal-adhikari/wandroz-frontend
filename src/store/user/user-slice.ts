@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   acceptFollowRequest,
+  changePassword,
   followUser,
   getFollowRequests,
   getFollowers,
@@ -8,6 +9,7 @@ import {
   getProfile,
   getProfileById,
   getSuggestedUsers,
+  resetPassword,
   searchUsers,
   updateBasicInfos,
   uploadProfilePicture,
@@ -69,6 +71,8 @@ interface UserState {
   suggestedUsers: User[];
   updateLoading: boolean;
   suggestedLoading: boolean;
+  changePasswordLoading: boolean;
+  forgotPasswordLoading: boolean;
 }
 enum Status {
   PENDING = "PENDING",
@@ -101,6 +105,8 @@ const initialState: UserState = {
   followersLoading: false,
   updateLoading: false,
   suggestedLoading: false,
+  changePasswordLoading: false,
+  forgotPasswordLoading: false,
 };
 
 const userSlice = createSlice({
@@ -229,6 +235,28 @@ const userSlice = createSlice({
       .addCase(getSuggestedUsers.fulfilled, (state, action) => {
         state.suggestedLoading = false;
         state.suggestedUsers = action.payload;
+      })
+      .addCase(changePassword.pending, (state) => {
+        state.changePasswordLoading = true;
+      })
+      .addCase(changePassword.fulfilled, (state) => {
+        state.changePasswordLoading = false;
+        toast.success("Password changed successfully");
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.changePasswordLoading = false;
+        toast.error(action.payload as string);
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.changePasswordLoading = true;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.changePasswordLoading = false;
+        toast.success("Reset link has been sent to your email");
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.changePasswordLoading = false;
+        toast.error(action.payload as string);
       });
   },
 });

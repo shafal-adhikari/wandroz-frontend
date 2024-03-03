@@ -224,3 +224,45 @@ export const getFollowings = createAsyncThunk(
     }
   }
 );
+interface ChangePassword {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+interface ResetPassword {
+  password: string;
+  confirmPassword: string;
+  token: string;
+}
+export const changePassword = createAsyncThunk(
+  "user/change",
+  async (data: ChangePassword, { rejectWithValue }) => {
+    try {
+      await axiosInstance.put(`/user/profile/change-password`, data);
+      return data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occured");
+      }
+    }
+  }
+);
+export const resetPassword = createAsyncThunk(
+  "user/reset",
+  async (data: ResetPassword, { rejectWithValue }) => {
+    try {
+      await axiosInstance.post(`/reset-password/${data.token}`, data);
+      return data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occured");
+      }
+    }
+  }
+);

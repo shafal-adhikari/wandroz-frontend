@@ -46,7 +46,7 @@ function Login() {
               }
               type="text"
               placeholder="Enter email"
-              className="w-[80%] px-3 py-3"
+              className="w-full px-3 py-3"
               inputClassName="text-xxl"
               onChange={inputChangeHandler}
               name="email"
@@ -61,7 +61,7 @@ function Login() {
               }
               type="password"
               placeholder="Enter password"
-              className="w-[80%] px-3 py-3"
+              className="w-full px-3 py-3"
               inputClassName="text-xxl"
               onChange={inputChangeHandler}
               name="password"

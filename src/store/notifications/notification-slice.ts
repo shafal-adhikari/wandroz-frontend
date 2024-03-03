@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getNotifications } from "./notification-actions";
+import { getNotifications, updateNotifications } from "./notification-actions";
 export interface INotification {
+  _id: string;
   userTo: string;
   userFrom: string;
   message: string;
@@ -8,6 +9,7 @@ export interface INotification {
   entityId: string;
   createdItemId: string;
   createdAt: Date;
+  read: boolean;
   comment: string;
   reaction: string;
   post: string;
@@ -15,13 +17,15 @@ export interface INotification {
 interface NotificationState {
   notificationsLoading: boolean;
   notifications: INotification[];
+  unReadCount: number;
 }
 
 const initialState: NotificationState = {
   notificationsLoading: false,
   notifications: [],
+  unReadCount: 0,
 };
-const postSlice = createSlice({
+const notificationSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {},
@@ -32,8 +36,14 @@ const postSlice = createSlice({
     builder.addCase(getNotifications.fulfilled, (state, action) => {
       state.notificationsLoading = false;
       state.notifications = action.payload;
+      state.unReadCount = state.notifications.filter((notification) => {
+        return !notification.read;
+      }).length;
+    });
+    builder.addCase(updateNotifications.fulfilled, (state) => {
+      state.unReadCount = 0;
     });
   },
 });
 
-export default postSlice.reducer;
+export default notificationSlice.reducer;

@@ -31,7 +31,7 @@ function Notifications() {
     );
   };
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-7">
       <div className="flex flex-col">
         <span className="text-2xl text-slate-700 font-semibold">
           Notification Settings
@@ -40,7 +40,7 @@ function Notifications() {
           Enable or disable notifications
         </span>
       </div>
-      <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col gap-5 w-full">
         <div className="flex justify-between items-center">
           <span className="text-xl text-slate-700">Messages</span>
           <ToggleSwitch

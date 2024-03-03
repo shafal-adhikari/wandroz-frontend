@@ -5,6 +5,7 @@ import Feed from "./pages/Feed/Feed";
 import Profile from "./pages/User/Profile";
 import Layout from "./Layout";
 import Settings from "./pages/Settings/Settings";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route element={<Profile />} path="/profile" />
           <Route element={<Profile />} path="/profile/:userId" />
           <Route element={<Settings />} path="/settings" />
+          <Route element={<ResetPassword />} path="/reset-password" />
         </Routes>
       </Layout>
     </BrowserRouter>
