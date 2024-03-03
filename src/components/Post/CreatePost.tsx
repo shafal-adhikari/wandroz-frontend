@@ -1,30 +1,63 @@
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "../shared/ui/Modal";
 import { AppDispatch, RootState } from "../../store/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu } from "@headlessui/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Dropzone from "./Dropzone";
-import { uploadPost } from "../../store/post/post-actions";
+import {
+  editPost,
+  getPostById,
+  uploadPost,
+} from "../../store/post/post-actions";
 import { fileToBase64 } from "../../utils/common";
 
 export default function CreatePost({
   isOpen,
   setIsOpen,
+  postId,
 }: {
   isOpen: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setIsOpen: any;
+  postId?: string;
 }) {
   const { user } = useSelector((state: RootState) => state.user);
-  const { uploadLoading } = useSelector((state: RootState) => state.post);
+  const { uploadLoading, post } = useSelector((state: RootState) => state.post);
   const [isPhotos, setIsPhotos] = useState(false);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [body, setBody] = useState({
     privacy: "Public",
     post: "",
   });
-  const [files, setFiles] = useState<File[]>([]);
   const dispatch: AppDispatch = useDispatch();
+  useEffect(() => {
+    if (postId && post?.imageLinks.length) {
+      setIsPhotos(true);
+    }
+    if (post && post.imageLinks) {
+      setImagePreviews(post.imageLinks);
+    }
+  }, [post, postId]);
+  useEffect(() => {
+    if (postId) {
+      dispatch(getPostById(postId));
+    } else {
+      setBody({
+        privacy: "Public",
+        post: "",
+      });
+    }
+  }, [postId, dispatch]);
+  useEffect(() => {
+    if (post) {
+      setBody({
+        privacy: post.privacy ?? "Public",
+        post: post.post,
+      });
+    }
+  }, [post]);
+  const [files, setFiles] = useState<File[]>([]);
   const uploadPostHandler = async () => {
     const images: string[] = await Promise.all(
       files.map(async (file) => {
@@ -32,6 +65,19 @@ export default function CreatePost({
         return base64String;
       })
     );
+    if (postId) {
+      await dispatch(
+        editPost({
+          privacy: body.privacy,
+          post: body.post,
+          images: images.length > 0 ? images : undefined,
+          id: postId,
+          prevImages: imagePreviews,
+        })
+      );
+      setIsOpen(false);
+      return;
+    }
     await dispatch(
       uploadPost({
         privacy: body.privacy,
@@ -46,7 +92,7 @@ export default function CreatePost({
       isOpen={isOpen}
       closeModal={() => setIsOpen(false)}
       staticBackdrop={true}
-      title="Create Post"
+      title={postId ? "Edit Post" : "Create Post"}
     >
       <div className="flex w-full h-auto p-3 flex-col gap-3">
         <div className="flex gap-2">
@@ -131,6 +177,8 @@ export default function CreatePost({
         ></textarea>
         {isPhotos && (
           <Dropzone
+            imagePreviews={imagePreviews}
+            setImagePreviews={setImagePreviews}
             files={files}
             setFiles={setFiles}
             accept={{
@@ -148,14 +196,6 @@ export default function CreatePost({
               icon="heroicons:photo-solid"
               className="text-2xl text-green-600 cursor-pointer"
             />
-            {/* <Icon
-              icon="heroicons:video-camera-solid"
-              className="text-2xl text-red-600 cursor-pointer"
-            /> */}
-            {/* <Icon
-              icon="heroicons:gif-solid"
-              className="text-2xl text-blue-600 cursor-pointer"
-            /> */}
           </div>
         </div>
         <button

@@ -3,6 +3,7 @@ import {
   acceptFollowRequest,
   changePassword,
   followUser,
+  forgotPassword,
   getFollowRequests,
   getFollowers,
   getFollowings,
@@ -252,9 +253,20 @@ const userSlice = createSlice({
       })
       .addCase(resetPassword.fulfilled, (state) => {
         state.changePasswordLoading = false;
-        toast.success("Reset link has been sent to your email");
+        toast.success("Password changed successfully");
       })
       .addCase(resetPassword.rejected, (state, action) => {
+        state.changePasswordLoading = false;
+        toast.error(action.payload as string);
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.changePasswordLoading = true;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.changePasswordLoading = false;
+        toast.success("Reset link has been sent to your email");
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
         state.changePasswordLoading = false;
         toast.error(action.payload as string);
       });

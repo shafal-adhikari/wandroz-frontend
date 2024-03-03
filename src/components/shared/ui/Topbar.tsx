@@ -7,22 +7,22 @@ import CreatePost from "../../Post/CreatePost";
 import Search from "../../Search/Search";
 import ProfileMenu from "../../ProfileMenu/ProfileMenu";
 import FollowRequests from "../../FollowRequests/FollowRequests";
-import { getNotifications } from "../../../store/notifications/notification-actions";
 import Notifications from "../../Notifications/Notifications";
+import { Link } from "react-router-dom";
 
 function Topbar() {
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
     dispatch(getProfile());
   }, [dispatch]);
-  useEffect(() => {
-    dispatch(getNotifications());
-  }, []);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   return (
     <>
       <div className="w-screen bg-white h-[5rem] px-2 md:px-10 flex items-center justify-between shadow-md z-10 sticky top-0">
-        <span className="text-3xl text-slate-600 font-bold">Wandrozz</span>
+        {/* <span className="text-3xl text-slate-600 font-bold">Wandrozz</span> */}
+        <Link to="/">
+          <img src="/logo.png" className="h-[5rem]" />
+        </Link>
         <Search />
         <div className="flex items-center gap-5 ">
           <div
@@ -31,10 +31,6 @@ function Topbar() {
           >
             <Icon icon="gravity-ui:plus" className="text-xl" />
           </div>
-          {/* <div className="flex items-center justify-center rounded-full text-primary w-12 h-12 bg-gray-200 hover:bg-primary hover:text-white cursor-pointer transition-all duration-200 ease-in-out relative">
-            <Icon icon="carbon:notification-filled" className="text-2xl" />
-            <div className="absolute -top-1 right-1 bg-red-500 w-4 h-4 rounded-full"></div>
-          </div> */}
           <Notifications />
           <FollowRequests />
           <div className="flex items-center justify-center rounded-full text-primary w-12 h-12 bg-gray-200 hover:bg-primary hover:text-white cursor-pointer transition-all duration-200 ease-in-out relative">

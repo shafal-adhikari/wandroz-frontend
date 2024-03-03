@@ -98,9 +98,11 @@ export const removeReaction = createAsyncThunk(
   }
 );
 interface PostData {
-  post: string;
+  id?: string;
+  post?: string;
   privacy: string;
   images?: string[];
+  prevImages?: string[];
 }
 export const uploadPost = createAsyncThunk(
   "post/upload",
@@ -108,6 +110,55 @@ export const uploadPost = createAsyncThunk(
     try {
       const response = await axiosInstance.post(`/post`, data);
       return response.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occurred");
+      }
+    }
+  }
+);
+export const editPost = createAsyncThunk(
+  "post/upload",
+  async (data: PostData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(`/post/${data.id}`, data);
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occurred");
+      }
+    }
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  "post/delete",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`/post/${id}`);
+      return response.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occurred");
+      }
+    }
+  }
+);
+export const getPostById = createAsyncThunk(
+  "post/getbyid",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/post/${id}`);
+      return response.data.post;
     } catch (error) {
       const err = error as AxiosError<ResponseError>;
       if (err.response && err.response.data && err.response.data.message) {

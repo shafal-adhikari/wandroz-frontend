@@ -266,3 +266,22 @@ export const resetPassword = createAsyncThunk(
     }
   }
 );
+interface ForgotPassword {
+  email: string;
+}
+export const forgotPassword = createAsyncThunk(
+  "user/forgot",
+  async (data: ForgotPassword, { rejectWithValue }) => {
+    try {
+      await axiosInstance.post(`/forgot-password`, data);
+      return data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occured");
+      }
+    }
+  }
+);

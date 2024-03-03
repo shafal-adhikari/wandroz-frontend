@@ -6,11 +6,23 @@ const Dropzone = ({
   accept,
   files,
   setFiles,
+  imagePreviews,
+  setImagePreviews,
 }: {
   accept: { [key: string]: string[] };
   files: File[];
   setFiles: React.Dispatch<React.SetStateAction<File[]>>;
+  setImagePreviews: React.Dispatch<React.SetStateAction<string[]>>;
+  imagePreviews: string[];
 }) => {
+  const removePrevImage = (index: number) => {
+    setImagePreviews((previews) => {
+      const newFiles = previews.filter((_, i) => {
+        return i !== index;
+      });
+      return newFiles;
+    });
+  };
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
   }, []);
@@ -58,6 +70,22 @@ const Dropzone = ({
               />
               <div
                 onClick={() => removeImageHandler(index)}
+                className="cursor-pointer mx-auto left-1/2 py-1 px-2 -translate-x-1/2 absolute bottom-2 flex items-center justify-center text-sm bg-red-600 rounded-lg text-white"
+              >
+                Remove
+              </div>
+            </div>
+          ))}
+        {imagePreviews.length > 0 &&
+          imagePreviews.map((imagePreview, index) => (
+            <div className="relative" key={index}>
+              <img
+                src={imagePreview}
+                alt={`Preview of image`}
+                className="object-cover w-[10rem] h-[8rem]"
+              />
+              <div
+                onClick={() => removePrevImage(index)}
                 className="cursor-pointer mx-auto left-1/2 py-1 px-2 -translate-x-1/2 absolute bottom-2 flex items-center justify-center text-sm bg-red-600 rounded-lg text-white"
               >
                 Remove

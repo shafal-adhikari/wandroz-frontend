@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   addComment,
+  deletePost,
+  getPostById,
   getPosts,
   getProfilePosts,
   reactToPost,
@@ -51,6 +53,7 @@ interface PostState {
   postsCount: number;
   comments: CommentData[];
   uploadLoading: boolean;
+  post: Post | null;
 }
 
 const initialState: PostState = {
@@ -62,6 +65,7 @@ const initialState: PostState = {
   userPosts: [],
   comments: [],
   uploadLoading: false,
+  post: null,
 };
 const postSlice = createSlice({
   name: "posts",
@@ -208,13 +212,21 @@ const postSlice = createSlice({
       .addCase(uploadPost.pending, (state) => {
         state.uploadLoading = true;
       })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.posts = state.posts.filter((post) => {
+          return post._id !== action.meta.arg;
+        });
+        state.userPosts = state.posts.filter((post) => {
+          return post._id !== action.meta.arg;
+        });
+        toast.success("Post deleted successfully");
+      })
       .addCase(uploadPost.fulfilled, (state) => {
         state.uploadLoading = false;
         toast.success("Post uploaded");
       })
-      .addCase(uploadPost.rejected, (state, action) => {
-        state.uploadLoading = false;
-        toast.success(action.payload as string);
+      .addCase(getPostById.fulfilled, (state, action) => {
+        state.post = action.payload;
       });
   },
 });

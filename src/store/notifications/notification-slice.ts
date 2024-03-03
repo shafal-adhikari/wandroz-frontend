@@ -42,6 +42,12 @@ const notificationSlice = createSlice({
     });
     builder.addCase(updateNotifications.fulfilled, (state) => {
       state.unReadCount = 0;
+      state.notifications = state.notifications.map((notification) => {
+        return {
+          ...notification,
+          read: true,
+        };
+      });
     });
   },
 });

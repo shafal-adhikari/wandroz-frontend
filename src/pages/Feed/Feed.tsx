@@ -69,6 +69,7 @@ export default function Feed() {
               <Post
                 key={post._id}
                 id={post._id}
+                authorId={post.userId}
                 userReaction={post.userReaction!}
                 content={post.post}
                 authorPicture={post.profilePicture!}

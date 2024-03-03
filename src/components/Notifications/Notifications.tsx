@@ -58,7 +58,7 @@ function Notifications() {
               <div
                 key={i}
                 className={`flex ${
-                  !notification.read && "font-bold"
+                  !notification.read && "bg-slate-100"
                 } gap-3 px-3 py-3 rounded-md cursor-pointer hover:bg-slate-100 items-center`}
               >
                 {notification.notificationType == "reactions" && (
