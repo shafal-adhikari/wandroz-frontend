@@ -30,7 +30,7 @@ function Register() {
   return (
     <form className="w-full" onSubmit={signupHandler}>
       <div className="w-screen h-screen flex items-center justify-center">
-        <div className=" w-screen h-screen bg-white md:h-auto md:w-[25vw] rounded-3xl flex flex-col items-center py-10 px-5 gap-12">
+        <div className=" w-screen h-screen bg-white shadow-2xl md:h-auto md:w-[25vw] rounded-3xl flex flex-col items-center py-10 px-5 gap-12">
           <div className="flex flex-col gap-5 items-center">
             <h2 className="text-3xl font-bold text-slate-700">Wandroz</h2>
             <span className="text-md text-slate-500 text-center">
@@ -47,7 +47,7 @@ function Register() {
               }
               type="text"
               placeholder="Enter email"
-              className="w-[80%] px-3 py-3"
+              className="w-full px-3 py-3"
               inputClassName="text-xxl"
               onChange={inputChangeHandler}
               name="email"
@@ -62,7 +62,7 @@ function Register() {
               }
               type="text"
               placeholder="Enter username"
-              className="w-[80%] px-3 py-3"
+              className="w-full px-3 py-3"
               inputClassName="text-xxl"
               onChange={inputChangeHandler}
               name="username"
@@ -77,7 +77,7 @@ function Register() {
               }
               type="password"
               placeholder="Enter password"
-              className="w-[80%] px-3 py-3"
+              className="w-full px-3 py-3"
               inputClassName="text-xxl"
               onChange={inputChangeHandler}
               name="password"

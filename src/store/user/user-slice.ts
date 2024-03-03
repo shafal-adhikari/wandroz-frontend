@@ -1,20 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   acceptFollowRequest,
+  changePassword,
   followUser,
   getFollowRequests,
+  getFollowers,
+  getFollowings,
   getProfile,
   getProfileById,
-  getProfilePosts,
+  getSuggestedUsers,
+  resetPassword,
   searchUsers,
+  updateBasicInfos,
   uploadProfilePicture,
 } from "./user-actions";
 import { toast } from "react-toastify";
-interface User {
+export interface User {
   _id: string;
   firstName: string;
   lastName: string;
   email?: string;
+  quote: string;
   privacy: string;
   profilePicture: string;
   postsCount: number;
@@ -25,48 +31,31 @@ interface User {
   school: string;
   location: string;
   followingStatus?: FollowingStatus;
-  social: {
-    facebook: string;
-    instagram: string;
-    twitter: string;
-    youtube: string;
-  };
+  social: SocialLinks;
+  notifications: NotificationSettings;
 }
-interface IReactions {
-  like: number;
-  love: number;
-  happy: number;
-  wow: number;
-  sad: number;
-  angry: number;
-}
-interface Post {
-  _id: string;
-  userId: string;
-  post: string;
-  commentsCount: number;
-  profilePicture?: string;
-  firstName?: string;
-  lastName?: string;
-  imageLinks: string[];
-  videoLinks: string[];
-  videoId?: string;
-  videoVersion?: string;
-  feelings?: string;
-  privacy?: string;
-  reactions?: IReactions;
-  createdAt?: Date;
-}
+
 export enum FollowingStatus {
   FOLLOWING = "FOLLOWING",
   NOT_FOLLOWING = "NOT_FOLLOWING",
   PENDING = "PENDING",
 }
+export interface SocialLinks {
+  instagram: string;
+  facebook: string;
+  twitter: string;
+  youtube: string;
+}
+export interface NotificationSettings {
+  messages: boolean;
+  follows: boolean;
+  reactions: boolean;
+  comments: boolean;
+}
 interface UserState {
   loading: boolean;
   error: string | null;
   user: User | null;
-  userPosts: Post[];
   searchUsers: User[];
   userProfile: User | null;
   searchLoading: boolean;
@@ -74,15 +63,23 @@ interface UserState {
   followLoading: boolean;
   followRequestsLoading: boolean;
   profileUploadLoading: boolean;
-  followRequests: FollowRequest[];
+  followRequests: Follow[];
+  followings: Follow[];
+  followers: Follow[];
+  followersLoading: boolean;
   acceptLoadings: string[];
+  suggestedUsers: User[];
+  updateLoading: boolean;
+  suggestedLoading: boolean;
+  changePasswordLoading: boolean;
+  forgotPasswordLoading: boolean;
 }
 enum Status {
   PENDING = "PENDING",
   FOLLOWING = "FOLLOWING",
   NOT_FOLLOWED = "NOT_FOLLOWED",
 }
-interface FollowRequest {
+export interface Follow {
   _id: string;
   firstName: string;
   lastName: string;
@@ -93,7 +90,6 @@ const initialState: UserState = {
   user: null,
   loading: false,
   error: null,
-  userPosts: [],
   searchUsers: [],
   followRequests: [],
   userProfile: null,
@@ -102,7 +98,15 @@ const initialState: UserState = {
   followLoading: false,
   followRequestsLoading: false,
   profileUploadLoading: false,
+  suggestedUsers: [],
+  followers: [],
+  followings: [],
   acceptLoadings: [],
+  followersLoading: false,
+  updateLoading: false,
+  suggestedLoading: false,
+  changePasswordLoading: false,
+  forgotPasswordLoading: false,
 };
 
 const userSlice = createSlice({
@@ -134,14 +138,6 @@ const userSlice = createSlice({
       .addCase(getProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) ?? "An error occurred";
-      })
-      .addCase(getProfilePosts.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getProfilePosts.fulfilled, (state, action) => {
-        state.loading = false;
-        state.userPosts = action.payload.posts;
       })
       .addCase(searchUsers.pending, (state) => {
         state.searchLoading = true;
@@ -207,6 +203,59 @@ const userSlice = createSlice({
       })
       .addCase(uploadProfilePicture.rejected, (state, action) => {
         state.profileUploadLoading = false;
+        toast.error(action.payload as string);
+      })
+      .addCase(updateBasicInfos.fulfilled, (state) => {
+        state.updateLoading = false;
+      })
+      .addCase(updateBasicInfos.pending, (state) => {
+        state.updateLoading = true;
+      })
+      .addCase(updateBasicInfos.rejected, (state, action) => {
+        state.updateLoading = false;
+        toast.error(action.payload as string);
+      })
+      .addCase(getFollowers.pending, (state) => {
+        state.followersLoading = true;
+      })
+      .addCase(getFollowings.pending, (state) => {
+        state.followersLoading = true;
+      })
+      .addCase(getFollowings.fulfilled, (state, action) => {
+        state.followersLoading = false;
+        state.followings = action.payload;
+      })
+      .addCase(getFollowers.fulfilled, (state, action) => {
+        state.followersLoading = false;
+        state.followers = action.payload;
+      })
+      .addCase(getSuggestedUsers.pending, (state) => {
+        state.suggestedLoading = true;
+      })
+      .addCase(getSuggestedUsers.fulfilled, (state, action) => {
+        state.suggestedLoading = false;
+        state.suggestedUsers = action.payload;
+      })
+      .addCase(changePassword.pending, (state) => {
+        state.changePasswordLoading = true;
+      })
+      .addCase(changePassword.fulfilled, (state) => {
+        state.changePasswordLoading = false;
+        toast.success("Password changed successfully");
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.changePasswordLoading = false;
+        toast.error(action.payload as string);
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.changePasswordLoading = true;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.changePasswordLoading = false;
+        toast.success("Reset link has been sent to your email");
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.changePasswordLoading = false;
         toast.error(action.payload as string);
       });
   },

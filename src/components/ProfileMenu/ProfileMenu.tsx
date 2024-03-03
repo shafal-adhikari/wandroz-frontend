@@ -61,13 +61,16 @@ function ProfileMenu() {
           />
           Profile
         </Link>
-        <div className="flex gap-4 w-full px-3 h-[3rem] items-center text-md text-slate-600 cursor-pointer hover:bg-gray-100">
+        <Link
+          to="/settings"
+          className="flex gap-4 w-full px-3 h-[3rem] items-center text-md text-slate-600 cursor-pointer hover:bg-gray-100"
+        >
           <Icon
             icon="solar:settings-bold"
             className="text-2xl text-slate-600"
           />
           Settings
-        </div>
+        </Link>
         <div className="flex gap-4 w-full px-3 h-[3rem] items-center justify-between cursor-pointer hover:bg-gray-100">
           <div className="flex gap-4 h-full items-center text-md text-slate-600">
             <Icon
@@ -76,7 +79,11 @@ function ProfileMenu() {
             />
             Dark Mode
           </div>
-          <ToggleSwitch toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
+          <ToggleSwitch
+            toggleEnabled={toggleDarkMode}
+            enabled={darkMode}
+            isForDark={true}
+          />
         </div>
         <div className="flex gap-2  px-3 py-2 rounded-full bg-red-500 text-white items-center justify-center mx-3 mt-2 cursor-pointer">
           <Icon icon="majesticons:logout" className="text-xl font-bold" />
