@@ -35,6 +35,7 @@ function Post({
   comments,
   userReaction,
   isSingle,
+  privacy,
 }: {
   id: string;
   authorId: string;
@@ -49,6 +50,7 @@ function Post({
   comments: CommentData[];
   isSingle?: boolean;
   commentsCount: number;
+  privacy: string;
 }) {
   const dispatch: AppDispatch = useDispatch();
   const [commentText, setCommentText] = useState("");
@@ -120,11 +122,30 @@ function Post({
                 authorPicture.length ? authorPicture : "/default-avatar.webp"
               }
               alt="profile"
-              className="w-12 h-12 rounded-full"
+              className="w-12 h-12 rounded-full cursor-pointer"
+              onClick={() => {
+                navigate(`/profile/${authorId}`);
+              }}
             />
             <div className="flex flex-col">
-              <span className="text-md text-slate-700 font-bold">{author}</span>
-              <span className="text-sm text-slate-500">{getTimeAgo(time)}</span>
+              <span
+                className="text-md text-slate-700 font-bold cursor-pointer"
+                onClick={() => {
+                  navigate(`/profile/${authorId}`);
+                }}
+              >
+                {author}
+              </span>
+              <span className="text-sm text-slate-500 flex gap-1 items-center">
+                <Icon
+                  icon={
+                    privacy == "Private"
+                      ? "heroicons:lock-closed"
+                      : "heroicons:globe-alt"
+                  }
+                />
+                {getTimeAgo(time)}
+              </span>
             </div>
           </div>
           {authorId == user?._id && (

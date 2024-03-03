@@ -62,7 +62,7 @@ export const reactToPost = createAsyncThunk(
 );
 
 export const addComment = createAsyncThunk(
-  "post/comment",
+  "post/comment-add",
   async (data: CommentData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(`/post/comment`, data);

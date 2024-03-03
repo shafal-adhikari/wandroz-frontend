@@ -30,6 +30,14 @@ export default function CreatePost({
     privacy: "Public",
     post: "",
   });
+  useEffect(() => {
+    if (!isOpen) {
+      setBody({
+        privacy: "Public",
+        post: "",
+      });
+    }
+  }, [isOpen]);
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
     if (postId && post?.imageLinks.length) {
@@ -50,13 +58,13 @@ export default function CreatePost({
     }
   }, [postId, dispatch]);
   useEffect(() => {
-    if (post) {
+    if (post && postId) {
       setBody({
         privacy: post.privacy ?? "Public",
         post: post.post,
       });
     }
-  }, [post]);
+  }, [post, postId]);
   const [files, setFiles] = useState<File[]>([]);
   const uploadPostHandler = async () => {
     const images: string[] = await Promise.all(
@@ -90,7 +98,13 @@ export default function CreatePost({
   return (
     <Modal
       isOpen={isOpen}
-      closeModal={() => setIsOpen(false)}
+      closeModal={() => {
+        setIsOpen(false);
+        setBody({
+          post: "",
+          privacy: "Public",
+        });
+      }}
       staticBackdrop={true}
       title={postId ? "Edit Post" : "Create Post"}
     >

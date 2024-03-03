@@ -14,9 +14,7 @@ export default function Feed() {
   const { posts, postsLoading, postsCount } = useSelector(
     (state: RootState) => state.post
   );
-  const { suggestedUsers, user } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { suggestedUsers } = useSelector((state: RootState) => state.user);
   useEffect(() => {
     dispatch(getPosts(currentPage));
   }, [currentPage, dispatch]);
@@ -24,9 +22,9 @@ export default function Feed() {
     dispatch(getSuggestedUsers());
   }, [dispatch]);
   return (
-    <div className="flex w-full py-5 justify-between px-5">
-      <div className="w-[20vw] px-5 rounded-2xl flex flex-col gap-3 sticky top-[7rem] h-fit">
-        <div className="flex px-3 items-center gap-2 w-full">
+    <div className="flex w-[70vw] bg-white shadow-xl mx-auto py-5 gap-2 px-5">
+      {/* <div className="w-[20vw] px-5 rounded-2xl flex flex-col gap-3 sticky top-[7rem] h-fit"> */}
+      {/* <div className="flex px-3 items-center gap-2 w-full">
           <div className="w-12 h-12 rounded-full overflow-hidden">
             <img
               src={
@@ -44,8 +42,7 @@ export default function Feed() {
             </span>
             <span className="text-sm text-slate-500 ">{user?.email}</span>
           </div>
-        </div>
-      </div>
+        </div> */}
       <InfiniteScroll
         dataLength={posts.length}
         className="p-2 w-[45vw] flex flex-col gap-2 overflow-visible"
@@ -79,13 +76,14 @@ export default function Feed() {
                 time={post.createdAt!}
                 images={post.imageLinks}
                 reactions={post.reactions!}
+                privacy={post.privacy}
                 reactionCount={post.reactionCount!}
                 commentsCount={post.commentsCount}
               />
             );
           })}
       </InfiniteScroll>
-      <div className="w-[20vw] px-5 rounded-2xl flex flex-col gap-3 sticky top-[7rem] h-fit">
+      <div className="w-[18vw] bg-white shadow-xl px-5 py-5 rounded-2xl flex flex-col gap-3 sticky top-[6.5rem] h-fit">
         <div className="text-md text-slate-600 px-3 font-semibold">
           Suggested Users
         </div>

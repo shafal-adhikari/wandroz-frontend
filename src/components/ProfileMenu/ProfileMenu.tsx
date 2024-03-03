@@ -1,21 +1,22 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import ToggleSwitch from "../shared/ui/ToggleSwitch";
+// import ToggleSwitch from "../shared/ui/ToggleSwitch";
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+// import { useState } from "react";
 import {
   Dropdown,
   DropdownButton,
   DropdownContent,
 } from "../shared/Dropdown/Dropdown";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function ProfileMenu() {
   const { user } = useSelector((state: RootState) => state.user);
-  const [darkMode, setDarkMode] = useState(false);
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
+  // const [darkMode, setDarkMode] = useState(false);
+  // const toggleDarkMode = () => {
+  //   setDarkMode(!darkMode);
+  // };
+  const navigate = useNavigate();
   return (
     <Dropdown>
       <DropdownButton className="w-12 h-12 rounded-full overflow-hidden relative">
@@ -71,7 +72,7 @@ function ProfileMenu() {
           />
           Settings
         </Link>
-        <div className="flex gap-4 w-full px-3 h-[3rem] items-center justify-between cursor-pointer hover:bg-gray-100">
+        {/* <div className="flex gap-4 w-full px-3 h-[3rem] items-center justify-between cursor-pointer hover:bg-gray-100">
           <div className="flex gap-4 h-full items-center text-md text-slate-600">
             <Icon
               icon="streamline:dark-dislay-mode-solid"
@@ -84,8 +85,13 @@ function ProfileMenu() {
             enabled={darkMode}
             isForDark={true}
           />
-        </div>
-        <div className="flex gap-2  px-3 py-2 rounded-full bg-red-500 text-white items-center justify-center mx-3 mt-2 cursor-pointer">
+        </div> */}
+        <div
+          onClick={() => {
+            navigate("/login");
+          }}
+          className="flex gap-2  px-3 py-2 rounded-full bg-red-500 text-white items-center justify-center mx-3 mt-2 cursor-pointer"
+        >
           <Icon icon="majesticons:logout" className="text-xl font-bold" />
           Logout
         </div>

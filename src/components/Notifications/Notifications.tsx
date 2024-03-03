@@ -11,6 +11,7 @@ import {
   getNotifications,
   updateNotifications,
 } from "../../store/notifications/notification-actions";
+import { useNavigate } from "react-router-dom";
 
 function Notifications() {
   const dispatch: AppDispatch = useDispatch();
@@ -20,6 +21,7 @@ function Notifications() {
   useEffect(() => {
     dispatch(getNotifications());
   }, [dispatch]);
+  const navigate = useNavigate();
   const markAsSeenHandler = () => {
     dispatch(updateNotifications(notifications[0]._id));
   };
@@ -57,6 +59,16 @@ function Notifications() {
             return (
               <div
                 key={i}
+                onClick={() => {
+                  if (
+                    notification.notificationType == "comment" ||
+                    notification.notificationType == "reactions"
+                  ) {
+                    navigate(`/post/${notification.entityId}`);
+                  } else if (notification.notificationType == "follows") {
+                    navigate(`/profile/${notification.entityId}`);
+                  }
+                }}
                 className={`flex ${
                   !notification.read && "bg-slate-100"
                 } gap-3 px-3 py-3 rounded-md cursor-pointer hover:bg-slate-100 items-center`}
@@ -65,6 +77,12 @@ function Notifications() {
                   <img
                     src={`/reactions/${notification.reaction}.png`}
                     className="w-8 h-8"
+                  />
+                )}
+                {notification.notificationType == "follows" && (
+                  <Icon
+                    className="text-primary text-4xl"
+                    icon="heroicons:users-solid"
                   />
                 )}
                 {notification.notificationType == "comment" && (

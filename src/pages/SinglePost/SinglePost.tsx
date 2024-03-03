@@ -22,6 +22,7 @@ function SinglePost() {
     <div className="w-[50vw] mx-auto bg-white h-auto p-4 rounded-2xl my-5">
       {post && (
         <Post
+          privacy={post.privacy}
           comments={post.comments ?? []}
           key={post!._id}
           id={post!._id}

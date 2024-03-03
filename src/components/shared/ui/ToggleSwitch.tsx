@@ -4,10 +4,12 @@ const ToggleSwitch = ({
   toggleEnabled,
   enabled,
   isForDark,
+  isForPrivacy,
 }: {
   toggleEnabled: () => void;
   enabled: boolean;
   isForDark?: boolean;
+  isForPrivacy?: boolean;
 }) => {
   return (
     <>
@@ -35,9 +37,21 @@ const ToggleSwitch = ({
           >
             <span className={`${enabled ? "text-black" : "hidden"}`}>
               {isForDark && <Icon icon="ph:moon-light" />}
+              {isForPrivacy && (
+                <Icon
+                  icon="heroicons:lock-open-solid"
+                  className="text-primary"
+                />
+              )}
             </span>
             <span className={`${enabled ? "hidden" : "text-black"}`}>
               {isForDark && <Icon icon="ph:sun-light" />}
+              {isForPrivacy && (
+                <Icon
+                  icon="heroicons:lock-closed-solid"
+                  className="text-primary"
+                />
+              )}
             </span>
           </div>
         </div>

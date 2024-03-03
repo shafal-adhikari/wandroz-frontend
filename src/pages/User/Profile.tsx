@@ -323,6 +323,7 @@ export function Profile() {
                 userPosts.map((post) => {
                   return (
                     <Post
+                      privacy={post.privacy}
                       comments={post.comments ?? []}
                       authorId={post.userId}
                       id={post._id}

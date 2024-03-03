@@ -31,11 +31,12 @@ function Topbar() {
           >
             <Icon icon="gravity-ui:plus" className="text-xl" />
           </div>
-          <Notifications />
           <FollowRequests />
-          <div className="flex items-center justify-center rounded-full text-primary w-12 h-12 bg-gray-200 hover:bg-primary hover:text-white cursor-pointer transition-all duration-200 ease-in-out relative">
+          <Notifications />
+
+          {/* <div className="flex items-center justify-center rounded-full text-primary w-12 h-12 bg-gray-200 hover:bg-primary hover:text-white cursor-pointer transition-all duration-200 ease-in-out relative">
             <Icon icon="bi:chat-fill" className="text-xl" />
-          </div>
+          </div> */}
           <ProfileMenu />
         </div>
       </div>

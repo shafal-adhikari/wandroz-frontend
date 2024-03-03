@@ -1,6 +1,7 @@
 import { ReactNode, useState } from "react";
 import ChangePassword from "../../components/Settings/ChangePassword";
 import Notifications from "../../components/Settings/Notifications";
+// import Privacy from "../../components/Settings/Privacy";
 interface Tab {
   value: string;
   element: ReactNode;
@@ -15,10 +16,10 @@ function Settings() {
       value: "Change Password",
       element: <ChangePassword />,
     },
-    {
-      value: "Account Privacy",
-      element: <ChangePassword />,
-    },
+    // {
+    //   value: "Account Privacy",
+    //   element: <Privacy />,
+    // },
   ];
   const [activeTab, setActiveTab] = useState<Tab>(tabs[0]);
   return (
