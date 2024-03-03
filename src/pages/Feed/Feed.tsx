@@ -65,8 +65,10 @@ export default function Feed() {
         )}
         {!postsLoading &&
           posts.map((post) => {
+            console.log(post.comments, "stjosjos");
             return (
               <Post
+                comments={post.comments ?? []}
                 key={post._id}
                 id={post._id}
                 authorId={post.userId}

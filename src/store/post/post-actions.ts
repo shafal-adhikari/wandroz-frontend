@@ -66,7 +66,7 @@ export const addComment = createAsyncThunk(
   async (data: CommentData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(`/post/comment`, data);
-      return response.data;
+      return response.data.comment;
     } catch (error) {
       const err = error as AxiosError<ResponseError>;
       if (err.response && err.response.data && err.response.data.message) {
@@ -143,6 +143,22 @@ export const deletePost = createAsyncThunk(
     try {
       const response = await axiosInstance.delete(`/post/${id}`);
       return response.data;
+    } catch (error) {
+      const err = error as AxiosError<ResponseError>;
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message);
+      } else {
+        return rejectWithValue("An error occurred");
+      }
+    }
+  }
+);
+export const getComments = createAsyncThunk(
+  "post/comments",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/post/comments/${id}`);
+      return response.data.comments as CommentData[];
     } catch (error) {
       const err = error as AxiosError<ResponseError>;
       if (err.response && err.response.data && err.response.data.message) {

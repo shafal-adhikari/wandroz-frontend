@@ -18,7 +18,7 @@ function Topbar() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   return (
     <>
-      <div className="w-screen bg-white h-[5rem] px-2 md:px-10 flex items-center justify-between shadow-md z-10 sticky top-0">
+      <div className="w-screen bg-white h-[5rem] px-2 md:px-10 flex items-center justify-between shadow-md z-50 sticky top-0">
         {/* <span className="text-3xl text-slate-600 font-bold">Wandrozz</span> */}
         <Link to="/">
           <img src="/logo.png" className="h-[5rem]" />

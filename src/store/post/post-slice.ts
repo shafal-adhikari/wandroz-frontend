@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   addComment,
   deletePost,
+  getComments,
   getPostById,
   getPosts,
   getProfilePosts,
@@ -18,31 +19,35 @@ export interface IReactions {
   sad: number;
   angry: number;
 }
-export interface CommentData {
-  postId?: string;
-  firstName?: string;
-  lastName?: string;
-  profilePicture?: string;
-  comment: string;
-}
 interface Post {
   _id: string;
   userId: string;
   post: string;
   commentsCount: number;
-  profilePicture?: string;
-  firstName?: string;
-  lastName?: string;
+  profilePicture: string;
+  firstName: string;
+  lastName: string;
   imageLinks: string[];
   videoLinks: string[];
   videoId?: string;
   videoVersion?: string;
   feelings?: string;
-  privacy?: string;
+  privacy: string;
   reactions: IReactions;
-  reactionCount?: number;
-  userReaction?: string;
+  reactionCount: number;
+  comments: CommentData[];
+  userReaction: string;
+  createdAt: Date;
+}
+export interface CommentData {
+  _id?: string;
+  postId: string;
+  comment: string;
+  firstName?: string;
+  lastName?: string;
+  profilePicture?: string;
   createdAt?: Date;
+  userId?: string;
 }
 interface PostState {
   postsLoading: boolean;
@@ -51,9 +56,9 @@ interface PostState {
   error?: string | null;
   userPostsLoading: boolean;
   postsCount: number;
-  comments: CommentData[];
   uploadLoading: boolean;
   post: Post | null;
+  commentsLoading: boolean;
 }
 
 const initialState: PostState = {
@@ -63,9 +68,9 @@ const initialState: PostState = {
   error: null,
   userPostsLoading: false,
   userPosts: [],
-  comments: [],
   uploadLoading: false,
   post: null,
+  commentsLoading: false,
 };
 const postSlice = createSlice({
   name: "posts",
@@ -144,6 +149,27 @@ const postSlice = createSlice({
           }
           return post;
         });
+        if (state.post) {
+          state.post = {
+            ...state.post,
+            userReaction: data.type,
+            reactionCount:
+              state.post.reactionCount! +
+              (data.previousReaction.length > 1 ? 0 : 1),
+            reactions: {
+              ...state.post.reactions,
+              [data.type]:
+                state.post.reactions[
+                  data.type as keyof typeof state.post.reactions
+                ] + 1,
+              [data.previousReaction]: data.previousReaction.length
+                ? state.post.reactions[
+                    data.previousReaction as keyof typeof state.post.reactions
+                  ] - 1
+                : 0,
+            },
+          };
+        }
         state.userPosts = newUserPosts;
         state.posts = newPostsData;
       })
@@ -183,6 +209,19 @@ const postSlice = createSlice({
           }
           return post;
         });
+        if (state.post)
+          state.post = {
+            ...state.post,
+            userReaction: "",
+            reactionCount: state.post.reactionCount! - 1,
+            reactions: {
+              ...state.post.reactions,
+              [data.previousReaction]:
+                state.post.reactions[
+                  data.previousReaction as keyof typeof state.post.reactions
+                ] - 1,
+            },
+          };
         state.userPosts = newUserPosts;
         state.posts = newPostsData;
       })
@@ -192,6 +231,10 @@ const postSlice = createSlice({
             return {
               ...post,
               commentsCount: post.commentsCount + 1,
+              comments: [
+                { ...action.meta.arg, ...action.payload },
+                ...post.comments,
+              ],
             };
           }
           return post;
@@ -202,10 +245,23 @@ const postSlice = createSlice({
             return {
               ...post,
               commentsCount: post.commentsCount + 1,
+              comments: [
+                { ...action.meta.arg, ...action.payload },
+                ...post.comments,
+              ],
             };
           }
           return post;
         });
+        if (state.post) {
+          state.post = {
+            ...state.post,
+            comments: [
+              { ...action.meta.arg, ...action.payload },
+              ...state.post.comments,
+            ],
+          };
+        }
         state.userPosts = newUserPosts;
         state.posts = posts;
       })
@@ -227,6 +283,18 @@ const postSlice = createSlice({
       })
       .addCase(getPostById.fulfilled, (state, action) => {
         state.post = action.payload;
+      })
+      .addCase(getComments.pending, (state) => {
+        state.commentsLoading = true;
+      })
+      .addCase(getComments.fulfilled, (state, action) => {
+        state.commentsLoading = true;
+        if (state.post) {
+          state.post = {
+            ...state.post,
+            comments: action.payload,
+          };
+        }
       });
   },
 });

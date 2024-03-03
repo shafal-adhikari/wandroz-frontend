@@ -19,6 +19,7 @@ import Input from "../shared/ui/Input";
 import { toast } from "react-toastify";
 import PostComment from "../Comment/Comment";
 import CreatePost from "./CreatePost";
+import { useNavigate } from "react-router-dom";
 
 function Post({
   id,
@@ -31,7 +32,9 @@ function Post({
   reactions,
   reactionCount,
   commentsCount,
+  comments,
   userReaction,
+  isSingle,
 }: {
   id: string;
   authorId: string;
@@ -43,6 +46,8 @@ function Post({
   userReaction: string;
   reactions: IReactions;
   reactionCount: number;
+  comments: CommentData[];
+  isSingle?: boolean;
   commentsCount: number;
 }) {
   const dispatch: AppDispatch = useDispatch();
@@ -77,23 +82,18 @@ function Post({
     );
     setShowReactions(false);
   };
-  const [comments, setComments] = useState<CommentData[]>([]);
   const addCommentHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await dispatch(addComment({ comment: commentText, postId: id })).unwrap();
-      setComments((prevState) => {
-        return [
-          {
-            firstName: user!.firstName,
-            lastName: user!.lastName,
-            profilePicture: user!.profilePicture,
-            comment: commentText,
-            postId: id,
-          },
-          ...prevState,
-        ];
-      });
+      await dispatch(
+        addComment({
+          comment: commentText,
+          postId: id,
+          profilePicture: user?.profilePicture,
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+        })
+      ).unwrap();
       setCommentText("");
     } catch (error) {
       toast.error((error as string) ?? "Failed to add comment");
@@ -107,11 +107,12 @@ function Post({
       toast.error(error as string);
     }
   };
+  const navigate = useNavigate();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<string>();
   return (
     <>
-      <div className="w-full h-auto flex flex-col gap-2 rounded-md py-6 px-10 bg-white shadow-2xl">
+      <div className="w-full h-auto flex flex-col gap-2 rounded-md py-6 px-10 bg-white shadow-xl">
         <div className="w-full h-auto flex justify-between items-center">
           <div className="h-auto flex gap-2">
             <img
@@ -183,7 +184,12 @@ function Post({
               )}
             </div>
             {commentsCount > 0 && (
-              <span className="text-slate-700 justify-self-center">
+              <span
+                className="text-slate-700 justify-self-center cursor-pointer"
+                onClick={() => {
+                  if (!isSingle) navigate(`/post/${id}`);
+                }}
+              >
                 {commentsCount} {commentsCount > 1 ? "comments" : "comment"}
               </span>
             )}
@@ -253,14 +259,23 @@ function Post({
           </div>
         </div>
         <hr />
-        <div className="flex flex-col gap-2">
-          <span className="text-md font-semibold text-slate-600 py-1 cursor-pointer">
-            View Comments
-          </span>
-          {comments.map((comment, i) => {
-            return <PostComment comment={comment} key={i} />;
-          })}
-        </div>
+        {comments.length > 0 && (
+          <div className="flex flex-col gap-2 py-2">
+            {comments.length !== commentsCount && (
+              <span
+                className="text-md font-semibold text-slate-600 py-1 cursor-pointer"
+                onClick={() => {
+                  navigate(`/post/${id}`);
+                }}
+              >
+                View Comments
+              </span>
+            )}
+            {comments?.map((comment, i) => {
+              return <PostComment comment={comment} key={i} />;
+            })}
+          </div>
+        )}
         <form className="w-full" onSubmit={addCommentHandler}>
           <Input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

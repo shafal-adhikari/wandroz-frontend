@@ -323,6 +323,8 @@ export function Profile() {
                 userPosts.map((post) => {
                   return (
                     <Post
+                      comments={post.comments ?? []}
+                      authorId={post.userId}
                       id={post._id}
                       key={post._id}
                       userReaction={post.userReaction!}

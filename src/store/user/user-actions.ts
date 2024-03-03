@@ -75,7 +75,7 @@ export const followUser = createAsyncThunk(
   async (userId: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(`/user/follow/${userId}`);
-      return response.data.search;
+      return response.data;
     } catch (error) {
       const err = error as AxiosError<ResponseError>;
       if (err.response && err.response.data && err.response.data.message) {
