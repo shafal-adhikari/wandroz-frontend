@@ -57,6 +57,11 @@ export default function Feed() {
           </div>
         }
       >
+        {posts.length < 1 && (
+          <div className="w-full text-slate-600 text-lg flex items-center justify-center">
+            No Posts Found
+          </div>
+        )}
         {postsLoading && (
           <Icon className="animate-spin text-3xl" icon="gg:spinner" />
         )}
@@ -87,7 +92,11 @@ export default function Feed() {
         <div className="text-md text-slate-600 px-3 font-semibold">
           Suggested Users
         </div>
-
+        {suggestedUsers.length < 1 && (
+          <div className="w-full text-slate-600 text-md flex items-center justify-center">
+            No Suggestions Found
+          </div>
+        )}
         {suggestedUsers.map((user, i) => {
           return (
             <Link

@@ -9,7 +9,8 @@ import { AppDispatch } from "../../store/store";
 
 function Register() {
   const [body, setBody] = useState({
-    username: "",
+    firstName: "",
+    lastName: "",
     password: "",
     email: "",
   });
@@ -30,7 +31,7 @@ function Register() {
   return (
     <form className="w-full" onSubmit={signupHandler}>
       <div className="w-screen h-screen flex items-center justify-center">
-        <div className=" w-screen h-screen bg-white shadow-2xl md:h-auto md:w-[25vw] rounded-3xl flex flex-col items-center py-10 px-5 gap-12">
+        <div className="w-screen h-screen bg-white shadow-2xl md:h-auto md:w-[30vw] rounded-3xl flex flex-col items-center py-10 px-5 gap-12">
           <div className="flex flex-col gap-5 items-center">
             <h2 className="text-3xl font-bold text-slate-700">Wandroz</h2>
             <span className="text-md text-slate-500 text-center">
@@ -46,12 +47,12 @@ function Register() {
                 />
               }
               type="text"
-              placeholder="Enter email"
+              placeholder="Enter First Name"
               className="w-full px-3 py-3"
               inputClassName="text-xxl"
               onChange={inputChangeHandler}
-              name="email"
-              value={body.email}
+              name="firstName"
+              value={body.firstName}
             />
             <Input
               icon={
@@ -61,13 +62,29 @@ function Register() {
                 />
               }
               type="text"
-              placeholder="Enter username"
+              placeholder="Enter Last Name"
               className="w-full px-3 py-3"
               inputClassName="text-xxl"
               onChange={inputChangeHandler}
-              name="username"
-              value={body.username}
+              name="lastName"
+              value={body.lastName}
             />
+            <Input
+              icon={
+                <Icon
+                  icon="clarity:user-solid"
+                  className="text-xl text-primary"
+                />
+              }
+              type="text"
+              placeholder="Enter email"
+              className="w-full px-3 py-3"
+              inputClassName="text-xxl"
+              onChange={inputChangeHandler}
+              name="email"
+              value={body.email}
+            />
+
             <Input
               icon={
                 <Icon

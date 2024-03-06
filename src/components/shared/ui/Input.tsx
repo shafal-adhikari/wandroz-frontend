@@ -26,7 +26,7 @@ function MyInput(
   ref: ForwardedRef<HTMLInputElement>
 ) {
   return (
-    <div className="flex flex-col gap-2 items-center">
+    <div className="flex w-full flex-col gap-2 items-center">
       {label && (
         <label className="text-slate-800 self-start flex">{label}</label>
       )}

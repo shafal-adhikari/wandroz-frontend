@@ -233,26 +233,27 @@ const postSlice = createSlice({
               commentsCount: post.commentsCount + 1,
               comments: [
                 { ...action.meta.arg, ...action.payload },
-                ...post.comments,
+                ...(post.comments ?? []),
               ],
             };
           }
           return post;
         });
-
         const posts = [...state.posts].map((post) => {
+          console.log([{ ...action.meta.arg, ...action.payload }]);
           if (post._id == action.meta.arg.postId) {
             return {
               ...post,
               commentsCount: post.commentsCount + 1,
               comments: [
                 { ...action.meta.arg, ...action.payload },
-                ...post.comments,
+                ...(post.comments ?? []),
               ],
             };
           }
           return post;
         });
+
         if (state.post) {
           state.post = {
             ...state.post,
@@ -262,6 +263,8 @@ const postSlice = createSlice({
             ],
           };
         }
+        console.log("ok3");
+
         state.userPosts = newUserPosts;
         state.posts = posts;
       })
