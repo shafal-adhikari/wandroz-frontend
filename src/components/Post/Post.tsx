@@ -218,7 +218,7 @@ function Post({
         )}
         <div className="w-full h-15 flex justify-between items-end py-2">
           <div
-            className="grow flex flex-col gap-3 w-1/2 z-10"
+            className="grow flex flex-col gap-3 w-1/2"
             onMouseEnter={toggleReactions}
             onMouseLeave={toggleReactions}
           >

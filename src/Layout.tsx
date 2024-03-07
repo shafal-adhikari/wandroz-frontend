@@ -6,6 +6,7 @@ import axiosInstance from "./config/axios.config";
 function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
+
   // Add a response interceptor
   axiosInstance.interceptors.response.use(
     (response) => {

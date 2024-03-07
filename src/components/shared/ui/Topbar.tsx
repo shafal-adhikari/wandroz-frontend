@@ -18,7 +18,7 @@ function Topbar() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   return (
     <>
-      <div className="w-screen bg-white h-[5rem] px-2 md:px-10 flex items-center justify-between shadow-md z-50 sticky top-0">
+      <div className="w-screen bg-white h-[5rem] px-2 md:px-10 flex items-center justify-between shadow-md z-10 sticky top-0">
         {/* <span className="text-3xl text-slate-600 font-bold">Wandrozz</span> */}
         <Link to="/">
           <img src="/logo.png" className="h-[5rem]" />
@@ -34,9 +34,12 @@ function Topbar() {
           <FollowRequests />
           <Notifications />
 
-          {/* <div className="flex items-center justify-center rounded-full text-primary w-12 h-12 bg-gray-200 hover:bg-primary hover:text-white cursor-pointer transition-all duration-200 ease-in-out relative">
+          <Link
+            to="/chat"
+            className="flex items-center justify-center rounded-full text-primary w-12 h-12 bg-gray-200 hover:bg-primary hover:text-white cursor-pointer transition-all duration-200 ease-in-out relative"
+          >
             <Icon icon="bi:chat-fill" className="text-xl" />
-          </div> */}
+          </Link>
           <ProfileMenu />
         </div>
       </div>

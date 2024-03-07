@@ -7,6 +7,7 @@ import Layout from "./Layout";
 import Settings from "./pages/Settings/Settings";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import SinglePost from "./pages/SinglePost/SinglePost";
+import Chat from "./pages/Chat/Chat";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route element={<Profile />} path="/profile/:userId" />
           <Route element={<Settings />} path="/settings" />
           <Route element={<ResetPassword />} path="/reset-password" />
+          <Route element={<Chat />} path="/chat" />
         </Routes>
       </Layout>
     </BrowserRouter>
