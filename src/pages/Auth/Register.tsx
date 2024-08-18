@@ -1,12 +1,12 @@
 import { useState } from "react";
 import Input from "../../components/shared/ui/Input";
 import { Icon } from "@iconify/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { signup } from "../../store/auth/auth-actions";
 import { AppDispatch } from "../../store/store";
-
+import PasswordStrengthBar from "react-password-strength-bar";
 function Register() {
   const [body, setBody] = useState({
     firstName: "",
@@ -14,7 +14,7 @@ function Register() {
     password: "",
     email: "",
   });
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBody((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -23,7 +23,8 @@ function Register() {
     e.preventDefault();
     try {
       await dispatch(signup(body)).unwrap();
-      navigate("/");
+      toast.success("Verification Email has been sent to your email");
+      // navigate("/");
     } catch (error) {
       toast.error(error as string);
     }
@@ -100,6 +101,7 @@ function Register() {
               name="password"
               value={body.password}
             />
+            <PasswordStrengthBar className="w-full" password={body.password} />
           </div>
           <div className="flex flex-col gap-3 w-full items-center">
             <button

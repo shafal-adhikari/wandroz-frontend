@@ -8,6 +8,7 @@ import Settings from "./pages/Settings/Settings";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import SinglePost from "./pages/SinglePost/SinglePost";
 import Chat from "./pages/Chat/Chat";
+import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route element={<Settings />} path="/settings" />
           <Route element={<ResetPassword />} path="/reset-password" />
           <Route element={<Chat />} path="/chat" />
+          <Route element={<VerifyEmail />} path="/verify-user/:token" />
         </Routes>
       </Layout>
     </BrowserRouter>
